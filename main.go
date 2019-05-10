@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/dannyrsu/message-graphql/server"
+	"github.com/dannyrsu/social-media-graphql/server"
 )
 
 func main() {
