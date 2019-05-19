@@ -38,7 +38,7 @@ func (user *User) Validate() bool {
 	err := GetDB().Table("users").Where("email = ?", tempUser.Email).First(tempUser).Error
 
 	if err != nil && err != gorm.ErrRecordNotFound {
-		log.Fatalf("Connection Error: %v", err)
+		log.Fatalf("Connection Error: %v\n", err)
 		return false
 	}
 
@@ -61,7 +61,7 @@ func (user *User) Create() uint {
 	GetDB().Create(user)
 
 	if user.ID <= 0 {
-		log.Fatalln("Error creating new user: %v")
+		log.Fatalln("Error creating new user: %v\n")
 		return 0
 	}
 
@@ -74,7 +74,7 @@ func (user *User) Create() uint {
 	return user.ID
 }
 
-func (*User) Login(email, password string) bool {
+func Login(email, password string) bool {
 	user := &User{}
 
 	err := GetDB().Table("users").Where("email = ?", email).First(user).Error
@@ -83,7 +83,7 @@ func (*User) Login(email, password string) bool {
 		if err == gorm.ErrRecordNotFound {
 			log.Fatalln("Email address not found")
 		} else {
-			log.Fatalf("Connection error: %v", err)
+			log.Fatalf("Connection error: %v\n", err)
 		}
 
 		return false
@@ -92,7 +92,7 @@ func (*User) Login(email, password string) bool {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		log.Fatalf("Invalid credentials :%v", err)
+		log.Fatalf("Invalid credentials : %v\n", err)
 		return false
 	}
 
