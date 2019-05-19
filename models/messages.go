@@ -8,7 +8,7 @@ import (
 
 type Message struct {
 	gorm.Model
-	UserID  int
+	UserID  int `json:"user_id"`
 	Content string `json:"content"`
 }
 
