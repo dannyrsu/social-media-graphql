@@ -26,6 +26,7 @@ func (s *server) middleware() {
 		middleware.DefaultCompress,
 		middleware.StripSlashes,
 		middleware.Recoverer,
+		JwtValidate,
 	)
 }
 
