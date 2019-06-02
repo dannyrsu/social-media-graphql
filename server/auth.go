@@ -11,18 +11,23 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+func handleNoAuth(w http.ResponseWriter, r http.Request) {
+	noAuth := []string{"/"}
+	requestPath := r.URL.Path
+
+	for _, value := range noAuth {
+		if value == requestPath {
+			h.ServeHTTP(w, r)
+			return
+		}
+	}
+}
+
 func JwtValidate(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		noAuth := []string{"/"}
-		requestPath := r.URL.Path
-
-		for _, value := range noAuth {
-			if value == requestPath {
-				h.ServeHTTP(w, r)
-				return
-			}
-		}
-
+		
+		handleNoAuth(w, r)
+	
 		tokenHeader := r.Header.Get("Authorization")
 		if tokenHeader == "" {
 			w.WriteHeader(http.StatusForbidden)
