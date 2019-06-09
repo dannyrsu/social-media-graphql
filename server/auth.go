@@ -7,26 +7,23 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dannyrsu/go-contacts/models"
+	"github.com/dannyrsu/social-media-graphql/models"
 	"github.com/dgrijalva/jwt-go"
 )
-
-func handleNoAuth(w http.ResponseWriter, r *http.Request, h http.Handler) {
-	noAuth := []string{"/"}
-	requestPath := r.URL.Path
-
-	for _, value := range noAuth {
-		if value == requestPath {
-			h.ServeHTTP(w, r)
-			return
-		}
-	}
-}
 
 func JwtValidate(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
-		handleNoAuth(w, r, h)
+		// handleNoAuth(w, r, h)
+		noAuth := []string{"/", "/api/user/new"}
+		requestPath := r.URL.Path
+
+		for _, value := range noAuth {
+			if value == requestPath {
+				h.ServeHTTP(w, r)
+				return
+			}
+		}
 
 		tokenHeader := r.Header.Get("Authorization")
 		if tokenHeader == "" {

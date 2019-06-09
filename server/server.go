@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/dannyrsu/social-media-graphql/models"
@@ -28,6 +29,7 @@ func (s *server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(user)
 
 	if err != nil {
+		log.Fatalf("Error creating user: %v\n", err)
 		WriteJsonMessage(w, "Invalid Request")
 		return
 	}
