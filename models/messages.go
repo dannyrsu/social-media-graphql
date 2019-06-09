@@ -8,7 +8,7 @@ import (
 
 type Message struct {
 	gorm.Model
-	UserID  int `json:"user_id"`
+	UserID  int    `json:"user_id"`
 	Content string `json:"content"`
 }
 
@@ -22,7 +22,7 @@ func (message *Message) Validate() bool {
 }
 
 func (message *Message) Create() bool {
-	if !ok := message.Validate() {
+	if ok := message.Validate(); !ok {
 		return false
 	}
 
@@ -39,7 +39,7 @@ func (message *Message) Create() bool {
 func GetMessage(messageID uint) *Message {
 	message := &Message{}
 
-	err := GetDB().Table("messages").Where("id = ?", id).Find(message).Error
+	err := GetDB().Table("messages").Where("id = ?", messageID).Find(message).Error
 
 	if err != nil {
 		log.Fatalf("Error retreiving message: %v\n", err)
@@ -52,7 +52,7 @@ func GetMessage(messageID uint) *Message {
 func GetMessages(userID uint) []*Message {
 	messages := make([]*Message, 0)
 
-	err := GetDB().Table("messages").Where("user_id = ?", UserID).Find(&messages).Error
+	err := GetDB().Table("messages").Where("user_id = ?", userID).Find(&messages).Error
 
 	if err != nil {
 		log.Fatalf("Error retreiving messages for user: %v", err)

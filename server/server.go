@@ -1,7 +1,10 @@
 package server
 
 import (
+	"encoding/json"
 	"net/http"
+
+	"github.com/dannyrsu/social-media-graphql/models"
 
 	"github.com/rs/cors"
 
@@ -19,6 +22,20 @@ func (*server) defaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("GraphQL server"))
 }
 
+func (s *server) createUserHandler(w http.ResponseWriter, r *http.Request) {
+	user := &models.User{}
+
+	err := json.NewDecoder(r.Body).Decode(user)
+
+	if err != nil {
+		WriteJsonMessage(w, "Invalid Request")
+		return
+	}
+
+	response := user.Create()
+	WriteJsonMessage(w, response)
+}
+
 func (s *server) middleware() {
 	s.router.Use(
 		render.SetContentType(render.ContentTypeJSON),
@@ -32,6 +49,7 @@ func (s *server) middleware() {
 
 func (s *server) routes() {
 	s.router.Get("/", s.defaultHandler)
+	s.router.Post("/api/user/new", s.createUserHandler)
 }
 
 func InitializeServer() http.Handler {

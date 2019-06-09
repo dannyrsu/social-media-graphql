@@ -11,7 +11,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func handleNoAuth(w http.ResponseWriter, r http.Request) {
+func handleNoAuth(w http.ResponseWriter, r *http.Request, h http.Handler) {
 	noAuth := []string{"/"}
 	requestPath := r.URL.Path
 
@@ -25,9 +25,9 @@ func handleNoAuth(w http.ResponseWriter, r http.Request) {
 
 func JwtValidate(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		
-		handleNoAuth(w, r)
-	
+
+		handleNoAuth(w, r, h)
+
 		tokenHeader := r.Header.Get("Authorization")
 		if tokenHeader == "" {
 			w.WriteHeader(http.StatusForbidden)

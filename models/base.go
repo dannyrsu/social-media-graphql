@@ -14,6 +14,10 @@ var db *gorm.DB
 func init() {
 	e := godotenv.Load()
 
+	if e != nil {
+		log.Println(e)
+	}
+
 	username := os.Getenv("db_user")
 	password := os.Getenv("db_pass")
 	dbName := os.Getenv("db_name")
