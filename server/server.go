@@ -38,6 +38,20 @@ func (s *server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJsonMessage(w, response)
 }
 
+func (s *server) loginHandler(w http.ResponseWriter, r *http.Request) {
+	user := &models.User{}
+
+	err := json.NewDecoder(r.Body).Decode(user)
+
+	if err != nil {
+		log.Fatalf("Error authenticating: %v", err)
+		WriteJsonMessage(w, "Login failed")
+	}
+
+	response := models.Login(user.Email, user.Password)
+	WriteJsonMessage(w, response)
+}
+
 func (s *server) middleware() {
 	s.router.Use(
 		render.SetContentType(render.ContentTypeJSON),
@@ -52,6 +66,7 @@ func (s *server) middleware() {
 func (s *server) routes() {
 	s.router.Get("/", s.defaultHandler)
 	s.router.Post("/api/user/new", s.createUserHandler)
+	s.router.Post("/api/user/login", s.loginHandler)
 }
 
 func InitializeServer() http.Handler {
