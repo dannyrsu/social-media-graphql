@@ -15,7 +15,13 @@ func JwtValidate(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 
 		// handleNoAuth(w, r, h)
-		noAuth := []string{"/", "/api/user/new", "/api/user/login"}
+		noAuth := []string{
+			"/",
+			"/api/user/new",
+			"/api/user/login",
+			"/api/user/{username}/messages",
+			"/api/message",
+		}
 		requestPath := r.URL.Path
 
 		for _, value := range noAuth {
