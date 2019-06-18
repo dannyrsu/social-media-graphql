@@ -8,7 +8,7 @@ import (
 
 type Message struct {
 	gorm.Model
-	UserID  int    `json:"user_id"`
+	UserID  uint   `json:"user_id"`
 	Content string `json:"content"`
 }
 
@@ -36,26 +36,26 @@ func (message *Message) Create() bool {
 	return true
 }
 
-func GetMessage(messageID uint) *Message {
-	message := &Message{}
+func GetMessagesByUsername(username string) []*Message {
+	messages := make([]*Message, 0)
 
-	err := GetDB().Table("messages").Where("id = ?", messageID).Find(message).Error
+	err := GetDB().Table("messages").Where("user_name = ?", username).Find(&messages).Error
 
 	if err != nil {
-		log.Fatalf("Error retreiving message: %v\n", err)
+		log.Fatalf("Error retrieving messages for user: %v\n", err)
 		return nil
 	}
 
-	return message
+	return messages
 }
 
-func GetMessages(userID uint) []*Message {
+func GetAllMessages() []*Message {
 	messages := make([]*Message, 0)
 
-	err := GetDB().Table("messages").Where("user_id = ?", userID).Find(&messages).Error
+	err := GetDB().Table("messages").Find(&messages).Error
 
 	if err != nil {
-		log.Fatalf("Error retreiving messages for user: %v", err)
+		log.Fatalf("Error retrieving messages: %v\n", err)
 		return nil
 	}
 

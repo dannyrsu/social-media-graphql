@@ -23,7 +23,7 @@ func (*server) defaultHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("GraphQL server"))
 }
 
-func (s *server) createUserHandler(w http.ResponseWriter, r *http.Request) {
+func (*server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -38,7 +38,7 @@ func (s *server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJsonMessage(w, response)
 }
 
-func (s *server) loginHandler(w http.ResponseWriter, r *http.Request) {
+func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	err := json.NewDecoder(r.Body).Decode(user)
@@ -50,6 +50,37 @@ func (s *server) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	response := models.Login(user.Email, user.Password)
 	WriteJsonMessage(w, response)
+}
+
+func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
+	userID := r.Context().Value("user").(uint)
+	message := &models.Message{}
+
+	err := json.NewDecoder(r.Body).Decode(message)
+
+	if err != nil {
+		log.Fatalf("Error creating message: %v\n", err)
+		WriteJsonMessage(w, "Error creating message")
+	}
+
+	message.UserID = userID
+	response := message.Create()
+
+	WriteJsonMessage(w, response)
+}
+
+func (*server) getMessagesByUsernameHandler(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
+
+	messages := models.GetMessagesByUsername(username)
+
+	WriteJsonMessage(w, messages)
+}
+
+func (*server) getAllMessagesHandler(w http.ResponseWriter, r *http.Request) {
+	messages := models.GetAllMessages()
+
+	WriteJsonMessage(w, messages)
 }
 
 func (s *server) middleware() {
@@ -67,6 +98,9 @@ func (s *server) routes() {
 	s.router.Get("/", s.defaultHandler)
 	s.router.Post("/api/user/new", s.createUserHandler)
 	s.router.Post("/api/user/login", s.loginHandler)
+	s.router.Post("/api/message/new", s.createMessageHandler)
+	s.router.Get("/api/user/{username}/messages", s.getMessagesByUsernameHandler)
+	s.router.Get("/api/message", s.getAllMessagesHandler)
 }
 
 func InitializeServer() http.Handler {
