@@ -21,25 +21,28 @@ func (message *Message) Validate() bool {
 	return true
 }
 
-func (message *Message) Create() bool {
+func (message *Message) Create() uint {
 	if ok := message.Validate(); !ok {
-		return false
+		return 0
 	}
 
 	GetDB().Create(message)
 
 	if message.ID <= 0 {
 		log.Fatalln("Error creating message")
-		return false
+		return 0
 	}
 
-	return true
+	return message.ID
 }
 
 func GetMessagesByUsername(username string) []*Message {
 	messages := make([]*Message, 0)
+	user := User{}
 
-	err := GetDB().Table("messages").Where("user_name = ?", username).Find(&messages).Error
+	GetDB().Table("users").Where("user_name = ?", username).First(&user)
+
+	err := GetDB().Table("messages").Where("user_id = ?", user.ID).Find(&messages).Error
 
 	if err != nil {
 		log.Fatalf("Error retrieving messages for user: %v\n", err)
