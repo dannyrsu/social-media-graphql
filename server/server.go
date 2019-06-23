@@ -99,7 +99,7 @@ func (s *server) routes() {
 	s.router.Post("/api/user/new", s.createUserHandler)
 	s.router.Post("/api/user/login", s.loginHandler)
 	s.router.Post("/api/message/new", s.createMessageHandler)
-	s.router.Get("/api/user/{username}/messages", s.getMessagesByUsernameHandler)
+	s.router.Get("/api/user/{username}/message", s.getMessagesByUsernameHandler)
 	s.router.Get("/api/message", s.getAllMessagesHandler)
 }
 
