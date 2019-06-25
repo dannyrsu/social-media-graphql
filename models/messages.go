@@ -40,9 +40,13 @@ func GetMessagesByUsername(username string) []*Message {
 	messages := make([]*Message, 0)
 	user := User{}
 
-	GetDB().Table("users").Where("user_name = ?", username).First(&user)
+	err := GetDB().Table("users").Where("user_name = ?", username).First(&user).Error
+	if err != nil {
+		log.Fatalf("Error retrieving messages for user: %v\n", err)
+		return nil
+	}
 
-	err := GetDB().Table("messages").Where("user_id = ?", user.ID).Find(&messages).Error
+	err = GetDB().Table("messages").Where("user_id = ?", user.ID).Find(&messages).Error
 
 	if err != nil {
 		log.Fatalf("Error retrieving messages for user: %v\n", err)
