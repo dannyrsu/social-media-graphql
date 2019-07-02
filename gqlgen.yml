@@ -1,0 +1,21 @@
+# .gqlgen.yml example
+#
+# Refer to https://gqlgen.com/config/
+# for detailed .gqlgen.yml documentation.
+
+schema:
+- graphql/schema.graphql
+exec:
+  filename: graphql/generated.go
+  package: graphql
+autobind:
+  - github.com/dannyrsu/social-media-graphql/models
+models:
+  Message:
+    model: github.com/dannyrsu/social-media-graphql/models.Message
+  User:
+    model: github.com/dannyrsu/social-media-graphql/models.User
+resolver:
+  filename: graphql/resolver.go
+  package: graphql
+  type: Resolver
