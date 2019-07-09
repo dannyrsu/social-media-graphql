@@ -23,7 +23,7 @@ func (message *Message) Validate() bool {
 	return true
 }
 
-func (message *Message) Create() uint {
+func (message *Message) Create() int {
 	if ok := message.Validate(); !ok {
 		return 0
 	}

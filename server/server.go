@@ -53,7 +53,7 @@ func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("user").(uint)
+	userID := r.Context().Value("user").(int)
 	message := &models.Message{}
 
 	err := json.NewDecoder(r.Body).Decode(message)
