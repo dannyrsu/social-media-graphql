@@ -26,6 +26,9 @@ func (r *mutationResolver) CreateMessage(ctx context.Context, input main.NewMess
 
 type queryResolver struct{ *Resolver }
 
+func (r *queryResolver) Message(ctx context.Context, userID *int) (*models.Message, error) {
+	panic("not implemented")
+}
 func (r *queryResolver) Messages(ctx context.Context) ([]*models.Message, error) {
 	panic("not implemented")
 }

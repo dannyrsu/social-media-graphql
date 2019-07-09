@@ -8,6 +8,9 @@ schema:
 exec:
   filename: graphql/generated.go
   package: graphql
+model:
+  package: models
+  filename: models/models_gen.go
 autobind:
   - github.com/dannyrsu/social-media-graphql/models
 models:

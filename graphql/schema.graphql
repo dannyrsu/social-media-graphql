@@ -4,12 +4,18 @@
 
 type Message {
   id: ID!
+  created_at: Time!
+  updated_at: Time!
+  deleted_at: Time!
+  user_id: Int
   content: String!
-  userId: Int
 }
 
 type User {
   id: ID!
+  created_at: Time!
+  updated_at: Time!
+  deleted_at: Time!
   username: String!
   password: String!
   email: String!
@@ -19,14 +25,17 @@ type User {
 }
 
 type Query {
+  message(user_id: Int): Message
   messages: [Message!]!
 }
 
 input NewMessage {
-  text: String!
-  userId: String!
+  user_id: Int!
+  content: String!
 }
 
 type Mutation {
   createMessage(input: NewMessage!): Message!
 }
+
+scalar Time
