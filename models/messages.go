@@ -2,14 +2,16 @@ package models
 
 import (
 	"log"
-
-	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type Message struct {
-	gorm.Model
-	UserID  uint   `json:"user_id"`
-	Content string `json:"content"`
+	ID        int        `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	UserID    int        `json:"user_id"`
+	Content   string     `json:"content"`
 }
 
 func (message *Message) Validate() bool {

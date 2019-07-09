@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -12,18 +13,21 @@ import (
 )
 
 type Token struct {
-	UserID uint
+	UserID int
 	jwt.StandardClaims
 }
 
 type User struct {
-	gorm.Model
-	UserName  string `json:"username"`
-	Password  string `json:password`
-	Email     string `json:"email"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Token     string `json:"token"; sql:"-"`
+	ID        int        `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	UserName  string     `json:"username"`
+	Password  string     `json:password`
+	Email     string     `json:"email"`
+	FirstName string     `json:"firstname"`
+	LastName  string     `json:"lastname"`
+	Token     string     `json:"token"; sql:"-"`
 }
 
 func (user *User) Validate() bool {
@@ -50,7 +54,7 @@ func (user *User) Validate() bool {
 	return true
 }
 
-func (user *User) Create() uint {
+func (user *User) Create() int {
 	if !user.Validate() {
 		log.Fatalln("Can not create user account.")
 	}
