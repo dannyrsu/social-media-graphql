@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -18,16 +17,13 @@ type Token struct {
 }
 
 type User struct {
-	ID        int        `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
-	UserName  string     `json:"username"`
-	Password  string     `json:password`
-	Email     string     `json:"email"`
-	FirstName string     `json:"firstname"`
-	LastName  string     `json:"lastname"`
-	Token     string     `json:"token"; sql:"-"`
+	BaseModel
+	UserName  string `json:"username"`
+	Password  string `json:password`
+	Email     string `json:"email"`
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Token     string `json:"token"; sql:"-"`
 }
 
 func (user *User) Validate() bool {
