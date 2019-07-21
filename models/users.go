@@ -50,7 +50,7 @@ func (user *User) Validate() bool {
 	return true
 }
 
-func (user *User) Create() int {
+func (user *User) Create() *User {
 	if !user.Validate() {
 		log.Fatalln("Can not create user account.")
 	}
@@ -62,7 +62,7 @@ func (user *User) Create() int {
 
 	if user.ID <= 0 {
 		log.Fatalln("Error creating new user: %v\n")
-		return 0
+		return nil
 	}
 
 	tk := &Token{UserID: user.ID}
@@ -71,10 +71,10 @@ func (user *User) Create() int {
 	user.Token = tokenString
 	user.Password = ""
 
-	return user.ID
+	return user
 }
 
-func Login(email, password string) string {
+func Login(email, password string) *User {
 	user := &User{}
 
 	err := GetDB().Table("users").Where("email = ?", email).First(user).Error
@@ -86,14 +86,14 @@ func Login(email, password string) string {
 			log.Fatalf("Connection error: %v\n", err)
 		}
 
-		return ""
+		return user
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		log.Fatalf("Invalid credentials : %v\n", err)
-		return ""
+		return user
 	}
 
 	user.Password = ""
@@ -102,5 +102,5 @@ func Login(email, password string) string {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	user.Token = tokenString
 
-	return tokenString
+	return user
 }
