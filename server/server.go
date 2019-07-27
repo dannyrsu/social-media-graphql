@@ -1,14 +1,18 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/dannyrsu/social-media-graphql/models"
+	 gql "github.com/dannyrsu/social-media-graphql/graphql"
 
 	"github.com/rs/cors"
 
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/99designs/gqlgen/handler"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -101,6 +105,16 @@ func (s *server) routes() {
 	s.router.Post("/api/message/new", s.createMessageHandler)
 	s.router.Get("/api/user/{username}/message", s.getMessagesByUsernameHandler)
 	s.router.Get("/api/message", s.getAllMessagesHandler)
+	s.router.Handle("/", handler.Playground("SocialMedia", "/query"))
+	s.router.Handle("/query", handler.GraphQL(gql.NewExecutableSchema(gql.NewResolver()),
+		handler.ResolverMiddleware(func(ctx context.Context, next graphql.Resolver) (res interface{}, err error) {
+		rc := graphql.GetResolverContext(ctx)
+		fmt.Println("Entered", rc.Object, rc.Field.Name)
+		res, err = next(ctx)
+		fmt.Println("Left", rc.Object, rc.Field.Name, "=>", res, err)
+		return res, err
+	}),
+))
 }
 
 func InitializeServer() http.Handler {

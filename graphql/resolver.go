@@ -3,7 +3,6 @@ package graphql
 import (
 	"context"
 
-	"github.com/dannyrsu/social-media-graphql"
 	"github.com/dannyrsu/social-media-graphql/models"
 )
 
@@ -20,7 +19,7 @@ func (r *Resolver) Query() QueryResolver {
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) CreateMessage(ctx context.Context, input main.NewMessage) (*models.Message, error) {
+func (r *mutationResolver) CreateMessage(ctx context.Context, input models.NewMessage) (*models.Message, error) {
 	panic("not implemented")
 }
 
