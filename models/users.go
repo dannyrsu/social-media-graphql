@@ -12,12 +12,12 @@ import (
 )
 
 type Token struct {
-	UserID uint
+	UserID int
 	jwt.StandardClaims
 }
 
 type User struct {
-	gorm.Model
+	BaseModel
 	Email     string `json:"email"`
 	Password  string `json:password`
 	FirstName string `json:"firstname"`

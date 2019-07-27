@@ -2,12 +2,10 @@ package models
 
 import (
 	"log"
-
-	"github.com/jinzhu/gorm"
 )
 
 type Message struct {
-	gorm.Model
+	BaseModel
 	UserID  uint   `json:"user_id"`
 	Content string `json:"content"`
 }
