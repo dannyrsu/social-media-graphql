@@ -18,9 +18,8 @@ type Token struct {
 
 type User struct {
 	gorm.Model
-	UserName  string `json:"username"`
-	Password  string `json:password`
 	Email     string `json:"email"`
+	Password  string `json:password`
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Token     string `json:"token"; sql:"-"`

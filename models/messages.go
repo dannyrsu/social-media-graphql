@@ -36,11 +36,11 @@ func (message *Message) Create() *Message {
 	return message
 }
 
-func GetMessagesByUsername(username string) []*Message {
+func GetMessagesByEmail(email string) []*Message {
 	messages := make([]*Message, 0)
 	user := User{}
 
-	err := GetDB().Table("users").Where("user_name = ?", username).First(&user).Error
+	err := GetDB().Table("users").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		log.Fatalf("Error retrieving messages for user: %v\n", err)
 		return nil

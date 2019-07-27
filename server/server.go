@@ -69,10 +69,10 @@ func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
 	WriteJsonResponse(w, response)
 }
 
-func (*server) getMessagesByUsernameHandler(w http.ResponseWriter, r *http.Request) {
-	username := chi.URLParam(r, "username")
+func (*server) getMessagesByEmailHandler(w http.ResponseWriter, r *http.Request) {
+	email := chi.URLParam(r, "email")
 
-	messages := models.GetMessagesByUsername(username)
+	messages := models.GetMessagesByEmail(email)
 
 	WriteJsonResponse(w, messages)
 }
@@ -99,7 +99,7 @@ func (s *server) routes() {
 	s.router.Post("/api/user/new", s.createUserHandler)
 	s.router.Post("/api/user/login", s.loginHandler)
 	s.router.Post("/api/message/new", s.createMessageHandler)
-	s.router.Get("/api/user/{username}/message", s.getMessagesByUsernameHandler)
+	s.router.Get("/api/user/{email}/message", s.getMessagesByEmailHandler)
 	s.router.Get("/api/message", s.getAllMessagesHandler)
 }
 
