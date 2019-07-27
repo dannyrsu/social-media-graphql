@@ -30,12 +30,15 @@ func (*server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error creating user: %v\n", err)
-		WriteJsonResponse(w, map[string]interface{}{"error": "Invalid Request"})
+		WriteJsonResponse(w, map[string]interface{}{"error": "Invalid Request"}, http.StatusBadRequest)
 		return
 	}
 
-	response := user.Create()
-	WriteJsonResponse(w, response)
+	response, err := user.Create()
+	if err != nil {
+		WriteJsonResponse(w, err, http.StatusBadRequest)
+	}
+	WriteJsonResponse(w, response, http.StatusOK)
 }
 
 func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,11 +48,14 @@ func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error authenticating: %v", err)
-		WriteJsonResponse(w, map[string]interface{}{"error": "Login failed"})
+		WriteJsonResponse(w, map[string]interface{}{"error": "Login failed"}, http.StatusForbidden)
 	}
 
-	response := models.Login(user.Email, user.Password)
-	WriteJsonResponse(w, response)
+	response, err := models.Login(user.Email, user.Password)
+	if err != nil {
+		WriteJsonResponse(w, err, http.StatusForbidden)
+	}
+	WriteJsonResponse(w, response, http.StatusOK)
 }
 
 func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,27 +66,33 @@ func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error creating message: %v\n", err)
-		WriteJsonResponse(w, map[string]interface{}{"error": "Error creating message"})
+		WriteJsonResponse(w, map[string]interface{}{"error": "Error creating message"}, http.StatusBadRequest)
 	}
 
 	message.UserID = userID
-	response := message.Create()
-
-	WriteJsonResponse(w, response)
+	response, err := message.Create()
+	if err != nil {
+		WriteJsonResponse(w, err, http.StatusBadRequest)
+	}
+	WriteJsonResponse(w, response, http.StatusOK)
 }
 
 func (*server) getMessagesByEmailHandler(w http.ResponseWriter, r *http.Request) {
 	email := chi.URLParam(r, "email")
 
-	messages := models.GetMessagesByEmail(email)
-
-	WriteJsonResponse(w, messages)
+	messages, err := models.GetMessagesByEmail(email)
+	if err != nil {
+		WriteJsonResponse(w, err, http.StatusNotFound)
+	}
+	WriteJsonResponse(w, messages, http.StatusOK)
 }
 
 func (*server) getAllMessagesHandler(w http.ResponseWriter, r *http.Request) {
-	messages := models.GetAllMessages()
-
-	WriteJsonResponse(w, messages)
+	messages, err := models.GetAllMessages()
+	if err != nil {
+		WriteJsonResponse(w, err, http.StatusNotFound)
+	}
+	WriteJsonResponse(w, messages, http.StatusOK)
 }
 
 func (s *server) middleware() {

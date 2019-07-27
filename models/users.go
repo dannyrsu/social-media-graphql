@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"log"
 	"os"
 	"strings"
@@ -49,9 +50,10 @@ func (user *User) Validate() bool {
 	return true
 }
 
-func (user *User) Create() *User {
+func (user *User) Create() (*User, error) {
 	if !user.Validate() {
-		log.Fatalln("Can not create user account.")
+		log.Fatalln("Error creating account")
+		return nil, errors.New("error creating account")
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -61,7 +63,7 @@ func (user *User) Create() *User {
 
 	if user.ID <= 0 {
 		log.Fatalln("Error creating new user: %v\n")
-		return nil
+		return nil, errors.New("error creating new user")
 	}
 
 	tk := &Token{UserID: user.ID}
@@ -70,10 +72,10 @@ func (user *User) Create() *User {
 	user.Token = tokenString
 	user.Password = ""
 
-	return user
+	return user, nil
 }
 
-func Login(email, password string) *User {
+func Login(email, password string) (*User, error) {
 	user := &User{}
 
 	err := GetDB().Table("users").Where("email = ?", email).First(user).Error
@@ -85,14 +87,14 @@ func Login(email, password string) *User {
 			log.Fatalf("Connection error: %v\n", err)
 		}
 
-		return nil
+		return nil, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		log.Fatalf("Invalid credentials : %v\n", err)
-		return nil
+		return nil, err
 	}
 
 	user.Password = ""
@@ -101,5 +103,5 @@ func Login(email, password string) *User {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	user.Token = tokenString
 
-	return user
+	return user, nil
 }
