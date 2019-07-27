@@ -21,19 +21,19 @@ func (message *Message) Validate() bool {
 	return true
 }
 
-func (message *Message) Create() uint {
+func (message *Message) Create() *Message {
 	if ok := message.Validate(); !ok {
-		return 0
+		return nil
 	}
 
 	GetDB().Create(message)
 
 	if message.ID <= 0 {
 		log.Fatalln("Error creating message")
-		return 0
+		return nil
 	}
 
-	return message.ID
+	return message
 }
 
 func GetMessagesByUsername(username string) []*Message {

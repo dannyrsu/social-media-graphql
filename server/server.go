@@ -30,12 +30,12 @@ func (*server) createUserHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error creating user: %v\n", err)
-		WriteJsonMessage(w, "Invalid Request")
+		WriteJsonResponse(w, map[string]interface{}{"error": "Invalid Request"})
 		return
 	}
 
 	response := user.Create()
-	WriteJsonMessage(w, response)
+	WriteJsonResponse(w, response)
 }
 
 func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,11 +45,11 @@ func (*server) loginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error authenticating: %v", err)
-		WriteJsonMessage(w, "Login failed")
+		WriteJsonResponse(w, map[string]interface{}{"error": "Login failed"})
 	}
 
 	response := models.Login(user.Email, user.Password)
-	WriteJsonMessage(w, response)
+	WriteJsonResponse(w, response)
 }
 
 func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,13 +60,13 @@ func (*server) createMessageHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		log.Fatalf("Error creating message: %v\n", err)
-		WriteJsonMessage(w, "Error creating message")
+		WriteJsonResponse(w, map[string]interface{}{"error": "Error creating message"})
 	}
 
 	message.UserID = userID
 	response := message.Create()
 
-	WriteJsonMessage(w, response)
+	WriteJsonResponse(w, response)
 }
 
 func (*server) getMessagesByUsernameHandler(w http.ResponseWriter, r *http.Request) {
@@ -74,13 +74,13 @@ func (*server) getMessagesByUsernameHandler(w http.ResponseWriter, r *http.Reque
 
 	messages := models.GetMessagesByUsername(username)
 
-	WriteJsonMessage(w, messages)
+	WriteJsonResponse(w, messages)
 }
 
 func (*server) getAllMessagesHandler(w http.ResponseWriter, r *http.Request) {
 	messages := models.GetAllMessages()
 
-	WriteJsonMessage(w, messages)
+	WriteJsonResponse(w, messages)
 }
 
 func (s *server) middleware() {

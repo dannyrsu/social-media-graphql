@@ -23,7 +23,7 @@ func JwtValidate(h http.Handler) http.Handler {
 				tokenHeader := r.Header.Get("Authorization")
 				if tokenHeader == "" {
 					w.WriteHeader(http.StatusForbidden)
-					WriteJsonMessage(w, "Missing Token")
+					WriteJsonResponse(w, map[string]interface{}{"error": "Missing Token"})
 					log.Fatalln("Missing token")
 					return
 				}
@@ -31,7 +31,7 @@ func JwtValidate(h http.Handler) http.Handler {
 				splitToken := strings.Split(tokenHeader, " ")
 				if len(splitToken) != 2 {
 					w.WriteHeader(http.StatusForbidden)
-					WriteJsonMessage(w, "Invalid or malformed token")
+					WriteJsonResponse(w, map[string]interface{}{"error": "Invalid or malformed token"})
 					log.Fatalln("Invalid or malformed token")
 					return
 				}
@@ -45,7 +45,7 @@ func JwtValidate(h http.Handler) http.Handler {
 
 				if err != nil || !token.Valid {
 					w.WriteHeader(http.StatusForbidden)
-					WriteJsonMessage(w, "Invalid or malformed token")
+					WriteJsonResponse(w, map[string]interface{}{"error": "Invalid or malformed token"})
 					log.Fatalf("Invalid or malformed token: %v", err)
 					return
 				}

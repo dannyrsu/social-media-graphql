@@ -5,8 +5,7 @@ import (
 	"net/http"
 )
 
-func WriteJsonMessage(w http.ResponseWriter, message interface{}) {
-	response := map[string]interface{}{"message": message}
+func WriteJsonResponse(w http.ResponseWriter, response interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
